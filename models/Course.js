@@ -4,9 +4,11 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const Mixed = Schema.Types.Mixed;
 
+
 var courseSchema = Schema( {
     limit: Number,
     times: Mixed,
+    strTimes: [String],
     enrolled: Number,
     details: String,
     type: String,

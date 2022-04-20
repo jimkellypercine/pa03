@@ -17,6 +17,7 @@ Here we want a ul list with the instructor, coursenum, title, term
         const inst = course['instructor'];
         const term = course.term;
         const sem = term%10;
+        const Key = course.name;
         const semester=['none','Spring 2021','Summer 2021','Fall 2020']
          %>
       <tr class="mb-2"> 
@@ -32,6 +33,9 @@ Here we want a ul list with the instructor, coursenum, title, term
 
         <td>
             <strong><%= course.name %></strong>
+        </td>
+        <td>
+
         </td>
 
         <td>
