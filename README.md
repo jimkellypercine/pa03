@@ -3,6 +3,8 @@
 This is a starter project which has a simple authentication module 
 and provides access to a mongoose database in the cloud.
 
+Tiffany's Short Movie: https://www.youtube.com/watch?v=cBmjhNvszwE
+
 ## Installation
 Download the project from github and download nodejs and npm from https://nodejs.org
 and cd into the folder
