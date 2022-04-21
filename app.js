@@ -114,125 +114,6 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
-/*
-    Exam 11 routes
-*/
-
-app.get('/exam11a', (req, res, next) => {
-  res.render("exam11a");
-})
-
-// here is a list of courses we will send down to the exam11-ejs view
-const bigcourses =
-  [
-    {'subj': 'COSI',
-    'num': '2A',
-    'term': 'Spring 2017',
-    'inst': 'Hickey, Timothy',
-    'title': 'INTRO TO COMPUTERS',
-    'enr': '158'},
-
-    {'subj': 'COSI',
-    'num': '155B',
-    'term': 'Spring 2018',
-    'inst': 'Hickey, Timothy',
-    'title': 'COMPUTER GRAPHICS',
-    'enr': '155'},
-
-    {'subj': 'COSI',
-    'num': '11A',
-    'term': 'Fall 2018',
-    'inst': 'Hickey, Timothy',
-    'title': 'PROGRAMMING IN JAVA',
-    'enr': '169'},
-
-    {'subj': 'COSI',
-    'num': '164A',
-    'term': 'Spring 2019',
-    'inst': 'Hickey, Timothy',
-    'title': 'INTRO 3-D ANIMATION',
-    'enr': '153'},
-
-    {'subj': 'COSI',
-    'num': '29A',
-    'term': 'Fall 2019',
-    'inst': 'Cherniack, Mitch',
-    'title': 'DISCRETE STRUCTURES',
-    'enr': '154'},
-
-    {'subj': 'COSI',
-    'num': '10A',
-    'term': 'Fall 2019',
-    'inst': 'Hickey, Timothy',
-    'title': 'INTRO PROBLEM SOLVING PYTHON',
-    'enr': '155'},
-
-    {'subj': 'COSI',
-    'num': '164A',
-    'term': 'Fall 2020',
-    'inst': 'Hickey, Timothy J',
-    'title': 'Introduction to 3-D Animation',
-    'enr': '166'}
-  ] 
-
-app.get('/exam11b', (req, res, next) => {
-  res.locals.courses = bigcourses
-  res.render("exam11b");
-})
-
-/*  routes for exam11c and exam11d go here */
-
-app.get("/exam11c", (req, res, next) => {
-
-  res.locals.units = false;
-
-  res.render("exam11c");
-
-});
-
-
-app.post("/exam11c", (req, res, next) => {
-  const {meters,units} = req.body;
-
-  res.locals.units = units;
-
-  res.locals.meters = meters;
-
-  if(res.locals.units == "inches"){
-
-    res.locals.converted = res.locals.meters*39.2701; 
-  }
-  if(res.locals.units == "feet"){
-
-    res.locals.converted = res.locals.meters*3.2804; 
-  }
-  if(res.locals.units == "yards"){
-
-    res.locals.converted = res.locals.meters*1.09361; 
-
-  }
-  res.render("exam11c");
-
-});
-
-
-app.get("/exam11d", (req, res, next) => {
-  res.render("exam11d");
-});
-
-app.get("/exam11d/:subj/:term",
-  async (req,res,next) => {
-    const subj = req.params.subj;
-    const term = req.params.term;
-    const courses = await Course.find({subject:subj,term:term})
-    res.json(courses)
-  } 
-)
-
-     
-
-
-
 
 
 /*
@@ -361,6 +242,7 @@ app.get('/upsertDB',
       const num = getNum(coursenum);
       course.num=num
       course.suffix = coursenum.slice(num.length)
+      course.strTimes = course.time
       await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
     }
     const num = await Course.find({}).count();
@@ -374,6 +256,19 @@ app.post('/courses/bySubject',
   async (req,res,next) => {
     const {subject} = req.body;
     const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+    
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
+app.post('/courses/byKeyWord',
+  // show list of courses in a given keyword
+  async (req,res,next) => {
+    const {KeyWord} = req.body;
+    const courses = await Course.find({subject:KeyWord,independent_study:false}).sort({term:1,num:1,section:1})
     
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -494,7 +389,7 @@ app.use(function(err, req, res, next) {
 //  Starting up the server!
 // *********************************************************** //
 //Here we set the port to use between 1024 and 65535  (2^16-1)
-const port = "5002";
+const port = "5005";
 app.set("port", port);
 
 // and now we startup the server listening on that port
