@@ -1,4 +1,4 @@
-<ul>
+<!-- <ul>
     <% for (course of courses){%>
         <li> 
             <a href="/schedule/remove/<%= course._id %>">X</a>
@@ -9,8 +9,29 @@
             
         </li>
     <% } %>
-</ul>
-
+</ul> -->
+<div class= "d-flex flex-wrap text-center overflow-scroll">
+    <% for (course of courses) {%>
+       <div class="p-3 m-3 border border-primary bg-light border-5">
+        <%= course['subject'] %>
+        <%= course.coursenum %>
+        <%= course.name %>
+        <%= course.term %>
+        </div>    
+     <%}%>
+  </div>
+  
+  <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Semester</th>
+            <th>Course #</th>
+            <th>Course Title</th>
+            <th>Enr/Limit/Waiting</th>
+            <th>Times</th>
+            <th>Instructor</th>
+        </tr>
+    </thead>
 <!--
     <pre>
         <%= JSON.stringify(courses,null,5) %>
