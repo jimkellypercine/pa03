@@ -192,16 +192,16 @@ function getNum(coursenum){
 }
 
 
-function times2str(times){
-  // convert a course.times object into a list of strings
-  // e.g ["Lecture:Mon,Wed 10:00-10:50","Recitation: Thu 5:00-6:30"]
-  if (!times || times.length==0){
-    return ["not scheduled"]
-  } else {
-    return times.map(x => time2str(x))
-  }
+// function times2str(times){
+//   // convert a course.times object into a list of strings
+//   // e.g ["Lecture:Mon,Wed 10:00-10:50","Recitation: Thu 5:00-6:30"]
+//   if (!times || times.length==0){
+//     return ["not scheduled"]
+//   } else {
+//     return times.map(x => time2str(x))
+//   }
   
-}
+// }
 function min2HourMin(m){
   // converts minutes since midnight into a time string, e.g.
   // 605 ==> "10:05"  as 10:00 is 60*10=600 minutes after midnight
@@ -214,17 +214,17 @@ function min2HourMin(m){
   }
 }
 
-function time2str(time){
-  // creates a Times string for a lecture or recitation, e.g. 
-  //     "Recitation: Thu 5:00-6:30"
-  const start = time.start
-  const end = time.end
-  const days = time.days
-  const meetingType = time['type'] || "Lecture"
-  const location = time['building'] || ""
+// function time2str(time){
+//   // creates a Times string for a lecture or recitation, e.g. 
+//   //     "Recitation: Thu 5:00-6:30"
+//   const start = time.start
+//   const end = time.end
+//   const days = time.days
+//   const meetingType = time['type'] || "Lecture"
+//   const location = time['building'] || ""
 
-  return `${meetingType}: ${days.join(",")}: ${min2HourMin(start)}-${min2HourMin(end)} ${location}`
-}
+//   return `${meetingType}: ${days.join(",")}: ${min2HourMin(start)}-${min2HourMin(end)} ${location}`
+// }
 
 
 
@@ -240,9 +240,10 @@ app.get('/upsertDB',
     for (course of courses){
       const {subject,coursenum,section,term}=course;
       const num = getNum(coursenum);
-      course.num=num
+      const strTime = strTimes
+      course.strTimes = strTime
+
       course.suffix = coursenum.slice(num.length)
-      course.strTimes = course.time
       await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
     }
     const num = await Course.find({}).count();
@@ -258,7 +259,7 @@ app.post('/courses/bySubject',
     const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
     
     res.locals.courses = courses
-    res.locals.times2str = times2str
+    //res.locals.times2str = times2str
     //res.json(courses)
     res.render('courselist')
   }
@@ -267,13 +268,24 @@ app.post('/courses/bySubject',
 app.post('/courses/byKeyWord',
   // show list of courses in a given keyword
   async (req,res,next) => {
-    const {KeyWord} = req.body;
-    const courses = await Course.find({subject:KeyWord,independent_study:false}).sort({term:1,num:1,section:1})
-    
+    const KeyWord = req.body.KeyWord;
+   // const courses = await Course.find({name:KeyWord,independent_study:false}).sort({term:1,num:1,section:1})
+    const courses = await Course.find({name:{$regex:KeyWord , $options:'i'}}).sort({term:1,num:1,section:1})
     res.locals.courses = courses
-    res.locals.times2str = times2str
+    //res.locals.times2str = times2str                                                                        
     //res.json(courses)
     res.render('courselist')
+  }
+)
+app.get('/courses/byKeyWord/:KeyWord',
+  // show all info about a course given its courseid
+  async (req,res,next) => {
+    const KeyWord = req.params;
+    const courses = await Course.find({name:{$regex:KeyWord , $options:'i'}})
+    res.locals.courses = courses
+    //res.locals.times2str = times2str
+    //res.json(course)
+    res.render('course')
   }
 )
 
@@ -283,7 +295,7 @@ app.get('/courses/show/:courseId',
     const {courseId} = req.params;
     const course = await Course.findOne({_id:courseId})
     res.locals.course = course
-    res.locals.times2str = times2str
+    //res.locals.times2str = times2str
     //res.json(course)
     res.render('course')
   }
@@ -304,13 +316,10 @@ app.post('/courses/byInst',
   // show courses taught by a faculty send from a form
   async (req,res,next) => {
     const email = req.body.email+"@brandeis.edu";
-    const courses = 
-       await Course
-               .find({instructor:email,independent_study:false})
-               .sort({term:1,num:1,section:1})
+    const courses = await Course.find({instructor:email,independent_study:false}).sort({term:1,num:1,section:1})
     //res.json(courses)
     res.locals.courses = courses
-    res.locals.times2str = times2str
+    //res.locals.times2str = times2str
     res.render('courselist')
   }
 )
