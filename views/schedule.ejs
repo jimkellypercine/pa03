@@ -1,45 +1,12 @@
-<!-- <ul>
-    <% for (course of courses){%>
-        <li> 
-            <a href="/schedule/remove/<%= course._id %>">X</a>
-            <%= course['subject'] %>
-            <%= course.coursenum %>
-            <%= course.name %>
-            <%= course.term %>
+
             
-        </li>
-    <% } %>
-</ul> -->
-
-
-
-
-  
-  <!-- <table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Semester</th>
-            <th>Course #</th>
-            <th>Course Title</th>
-            <th>Enr/Limit/Waiting</th>
-            <th>Times</th>
-            <th>Instructor</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-       
-            <% for (course of courses) {%>
-               <div class="p-3 m-3 border border-primary bg-light border-5">
-                <%= course['subject'] %>
-                <%= course.coursenum %>
-                <%= course.name %>
-                <%= course.term %>
-                </div>    
-             <%}%> -->
-          
-             <table class="table table-bordered table-striped">
+            
+            
+            
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th>Delete</th>
                         <th>Semester</th>
                         <th>Course #</th>
                         <th>Course Title</th>
@@ -57,6 +24,22 @@
                      %>
                     
                   <tr class="mb-2"> 
+
+                    <td>
+                        <ul>
+                           
+
+                                    <a href="/schedule/remove/<%= course._id %>">X</a>
+                                    <%= course.coursenum %>
+                                    <%= course.name%>
+                                   
+                                    
+                           
+                        </ul> 
+                    </td>
+
+
+
                     <td><%= semester[term%10] %></td>
                     <td>
                         <a href="/courses/show/<%=course._id %>">
@@ -66,29 +49,41 @@
             
                         </a>
                     </td>
-            
+                    
                     <td>
                         <strong><%= course.name %></strong>
                     </td>
-                    <td>
-            
-                    </td>
-            
+
                     <td>
                         <%=course.enrolled %>/<%=course.limit || 999 %>/<%= course.waiting %>
                     </td>
-            
+                   
                     <td>
+                        <% for (t of course.strTimes){%> 
+                            <%= t %> <br> 
+                        <%} %>
+                        </td>
+
+                        <td>
+                            <%= inst[0]+" "+inst[1]%> <br> <%= " ("+inst[2]+")" %>
+                          </td>
+                   
+                    <td>
+            
+                    </td>
+            
+            
+                    <!-- <td>
                     <% for (t of course.strTimes){%> 
                         <%= t %> <br> 
                     <%} %>
-                    </td>
+                    </td> -->
                      <!-- <%= JSON.stringify(course.times) %> <br> -->
                     
             
-                    <td>
+                    <!-- <td>
                       <%= inst[0]+" "+inst[1]%> <br> <%= " ("+inst[2]+")" %>
-                    </td>
+                    </td> -->
                 </tr>
                 <% } %>
                 </tbody>
