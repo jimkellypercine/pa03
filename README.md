@@ -3,7 +3,7 @@
 This is a starter project which has a simple authentication module 
 and provides access to a mongoose database in the cloud.
 
-Jimkelly's Short Movie:
+Jimkelly's Short Movie: https://brandeis.zoom.us/rec/share/PuWTi_IiQ5LPqJJv94awnGsvRbJ1BQqvW1yAo6HAQfmCXm4WyQ0mo_Qs4ulIzAD-.zRQVWrsr3IH574l5
 
 
 
